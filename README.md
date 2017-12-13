@@ -2,13 +2,13 @@
 
 A continuous delivery pipeline for AWS Lambda, managed by AWS CloudFormation.
 
-### What and why :pencil2:
+### Scope :pencil2:
 
-I [built it](https://milancermak.wordpress.com/2017/03/15/aws-lambda-deployment-pipeline/) to automate a part of my process of developing Alexa skills, hence the AWS Lambda part. However it's easy to transform and extend. You can use it to create a CI/CD pipeline for any piece of your AWS infrastructure.
+You can use it to create a CI/CD pipeline for any piece of your AWS infrastructure.
 
 ### How it works :wrench:
 
-Besides a couple of necessary resources, like IAM roles, the core of the system is a combo of CodeCommit (code repository), CodeBuild (building, testing and packaging) and CodePipeline (deployment). It is the CodePipeline that ties it all together, where the magic happens.
+The core of the system is a combo of CodeCommit (code repository), CodeBuild (building, testing and packaging) and CodePipeline (deployment). It is the CodePipeline that ties it all together, where the magic happens.
 
 The pipeline is defined in a couple of stages.
 

@@ -4,7 +4,7 @@ Description: My Lambda function
 Parameters:
   CapitalizedProjectName:
     Type: String
-    Default: MyLambdaProject
+    Default: Protagonist
   DeploymentPackageKey:
     Type: String
     Description: An S3 object key pointing of a ZIP file, an archive of everything that is needed to run the Lambda function. It is the output of the Build stage of the pipeline.
