@@ -128,19 +128,18 @@ Resources:
       RoleArn: !GetAtt CodePipelineRole.Arn
       Stages:
         - Name: Source
-        Actions:
-        - Name: Source
-          ActionTypeId:
-            Category: Source
-            Owner: ThirdParty
-            Version: 1
-            Provider: GitHub
-          Configuration:
-            Owner: !Ref GitHubOwner
-            Repo: !Ref GitHubRepo
-            Branch: !Ref GitHubBranch
-            OAuthToken: !Ref GitHubToken
-          OutputArtifacts: [Name: Template]
+          Actions:
+            - Name: Source
+              ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Provider: CodeCommit
+                Version: 1
+              Configuration:
+                RepositoryName: !Ref SourceRepositoryName
+                BranchName: !Ref SourceBranchName
+              OutputArtifacts:
+                - Name: SourceOutput
         - Name: PipelineDeploy
           Actions:
             - Name: CreateUpdatePipeline
@@ -152,15 +151,6 @@ Resources:
               Configuration:
                 ActionMode: CREATE_UPDATE
                 Capabilities: CAPABILITY_IAM
-                ParameterOverrides: !Sub |
-                  {
-                    "ArtifactBucket": "${ArtifactBucket}",
-                    "StackFilename": "${StackFilename}",
-                    "GitHubOwner": "${GitHubOwner}",
-                    "GitHubRepo": "${GitHubRepo}",
-                    "GitHubBranch": "${GitHubBranch}",
-                    "GitHubToken": "${GitHubToken}"
-                  }
                 RoleArn: !GetAtt CloudFormationRole.Arn
                 StackName: !Ref AWS::StackName
                 TemplatePath: SourceOutput::infrastructure/pipeline.yml
@@ -198,6 +188,25 @@ Resources:
               InputArtifacts:
                 - Name: SourceOutput
                 - Name: BuildOutput
+        - Name: CreateS3Bucket
+          Actions:
+            - Name: CreateS3Bucket
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Provider: CloudFormation
+                Version: 1
+              Configuration:
+                ActionMode: CREATE_UPDATE
+                Capabilities: CAPABILITY_IAM
+                RoleArn: !GetAtt CloudFormationRole.Arn
+                StackName: !Sub '${ProjectName}-app'
+                TemplatePath: SourceOutput::infrastructure/S3_Website_Bucket_With_Retain_On_Delete.yaml
+                ParameterOverrides: '{"DeploymentPackageKey": {"Fn::GetArtifactAtt": ["BuildOutput", "ObjectKey"]}}'
+              InputArtifacts:
+                - Name: SourceOutput
+                - Name: BuildOutput
+
 
 Outputs:
 
