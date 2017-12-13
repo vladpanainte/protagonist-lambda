@@ -36,7 +36,7 @@ Resources:
       FunctionName: my-lambda-function
       Handler: main.handler
       Role: !GetAtt LambdaRunnerRole.Arn
-      Runtime: python3.6
+      Runtime: python2.7
 
 Outputs:
   LambdaFunction:
